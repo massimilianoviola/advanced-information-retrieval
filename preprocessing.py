@@ -1,7 +1,7 @@
 import json
 import os
 import shutil
-
+import re
 
 ######### CONFIG #########
 
@@ -11,6 +11,8 @@ os.makedirs(med_output_path, exist_ok=True)
 cacm_output_path = "data/cacm"
 os.makedirs(cacm_output_path, exist_ok=True)
 
+npl_output_path = "data/nlp"
+os.makedirs(npl_output_path, exist_ok=True)
 
 ######### MEDLINE #########
 
@@ -141,3 +143,48 @@ with open("cacm/qrels.text") as f, open(os.path.join(cacm_output_path, "qrels-tr
         query_id, doc_ic, _, _ = l.split()
         # write in trec_eval format
         g.write(f"{query_id} 0 {doc_ic} 1\n")
+
+
+######### NPL #########
+
+print("Preprocessing NPL...")
+pattern = r"(\d+)\n(.*?)\n   /"
+
+with open("npl/doc-text") as f, open(os.path.join(npl_output_path, "npl.json"), "w") as g:
+    document = f.read()
+    for match in re.findall(pattern, document, re.DOTALL):
+        doc_dict = {
+            "DOCID": match[0],
+            "TEXT": re.sub(r" +", " ", match[1].replace("\n", ' ')) # remove new lines and double spaces
+        }
+        json.dump(doc_dict, g)
+        g.write("\n")
+    
+    print(f"Wrote {count} records to disk")
+
+pattern = r"(\d+)\n(.*?)\n/"
+with open("npl/query-text") as f, open(os.path.join(npl_output_path, "queries.json"), "w") as g:
+    document = f.read()
+    queries = []
+    for match in re.findall(pattern, document, re.DOTALL):
+        doc_dict = {
+            "QUERYID": match[0],
+            "QUERY": match[1].lower()
+        }
+        queries.append(doc_dict)
+    
+    json.dump({"QUERIES": queries}, g)
+    
+    print(f"Wrote {len(queries)} queries to disk")
+
+pattern = r"(\d+)\n(.*?)\n   /"
+with open("npl/rlv-ass") as f, open(os.path.join(npl_output_path, "qrels-treceval.txt"), "w") as g:
+    document = f.read()
+    i = 0
+    for match in re.findall(pattern, document, re.DOTALL):
+        query_id = match[0]
+        for doc_id in match[1].split():
+            i += 1
+            g.write(f"{query_id} 0 {doc_id} 1\n")
+   
+    print(f"Wrote {i} record-query relevances to disk")

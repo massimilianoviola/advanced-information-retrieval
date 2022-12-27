@@ -1,24 +1,26 @@
 import json
 import os
-import shutil
 import re
+import shutil
+
 
 ######### CONFIG #########
 
-med_output_path = "data/med"
+med_output_path = "med/data"
 os.makedirs(med_output_path, exist_ok=True)
 
-cacm_output_path = "data/cacm"
+cacm_output_path = "cacm/data"
 os.makedirs(cacm_output_path, exist_ok=True)
 
-npl_output_path = "data/nlp"
+npl_output_path = "npl/data"
 os.makedirs(npl_output_path, exist_ok=True)
+
 
 ######### MEDLINE #########
 
 print("Preprocessing Medline...")
 
-with open("med/MED.ALL") as f, open(os.path.join(med_output_path, "med.json"), "w") as g:
+with open("download/med/MED.ALL") as f, open(os.path.join(med_output_path, "med.json"), "w") as g:
     lines = ""
     for l in f.readlines():
         lines += "\n" + l.strip() if l.startswith(".") else " " + l.strip()
@@ -44,7 +46,7 @@ with open("med/MED.ALL") as f, open(os.path.join(med_output_path, "med.json"), "
     
     print(f"Wrote {count} records to disk")
 
-with open("med/MED.QRY") as f, open(os.path.join(med_output_path, "queries.json"), "w") as g:
+with open("download/med/MED.QRY") as f, open(os.path.join(med_output_path, "queries.json"), "w") as g:
     lines = ""
     for l in f.readlines():
         lines += "\n" + l.strip() if l.startswith(".") else " " + l.strip()
@@ -72,14 +74,14 @@ with open("med/MED.QRY") as f, open(os.path.join(med_output_path, "queries.json"
     print(f"Wrote {len(queries)} queries to disk")
 
 # relevance judgements already in trec_eval format, just copy
-shutil.copyfile("med/MED.REL", os.path.join(med_output_path, "qrels-treceval.txt"))
+shutil.copyfile("download/med/MED.REL", os.path.join(med_output_path, "qrels-treceval.txt"))
 
 
 ######### CACM #########
 
 print("Preprocessing CACM...")
 
-with open("cacm/cacm.all") as f, open(os.path.join(cacm_output_path, "cacm.json"), "w") as g:
+with open("download/cacm/cacm.all") as f, open(os.path.join(cacm_output_path, "cacm.json"), "w") as g:
     lines = ""
     for l in f.readlines():
         lines += "\n" + l.strip() if l.startswith(".") else " " + l.strip()
@@ -110,7 +112,7 @@ with open("cacm/cacm.all") as f, open(os.path.join(cacm_output_path, "cacm.json"
     
     print(f"Wrote {count} records to disk")
 
-with open("cacm/query.text") as f, open(os.path.join(cacm_output_path, "queries.json"), "w") as g:
+with open("download/cacm/query.text") as f, open(os.path.join(cacm_output_path, "queries.json"), "w") as g:
     lines = ""
     for l in f.readlines():
         lines += "\n" + l.strip() if l.startswith(".") else " " + l.strip()
@@ -137,7 +139,7 @@ with open("cacm/query.text") as f, open(os.path.join(cacm_output_path, "queries.
     
     print(f"Wrote {len(queries)} queries to disk")
 
-with open("cacm/qrels.text") as f, open(os.path.join(cacm_output_path, "qrels-treceval.txt"), "w") as g:
+with open("download/cacm/qrels.text") as f, open(os.path.join(cacm_output_path, "qrels-treceval.txt"), "w") as g:
     lines = f.readlines()
     for l in lines:
         query_id, doc_ic, _, _ = l.split()
@@ -148,10 +150,11 @@ with open("cacm/qrels.text") as f, open(os.path.join(cacm_output_path, "qrels-tr
 ######### NPL #########
 
 print("Preprocessing NPL...")
-pattern = r"(\d+)\n(.*?)\n   /"
 
-with open("npl/doc-text") as f, open(os.path.join(npl_output_path, "npl.json"), "w") as g:
+pattern = r"(\d+)\n(.*?)\n   /"
+with open("download/npl/doc-text") as f, open(os.path.join(npl_output_path, "npl.json"), "w") as g:
     document = f.read()
+    count = 0
     for match in re.findall(pattern, document, re.DOTALL):
         doc_dict = {
             "DOCID": match[0],
@@ -159,11 +162,12 @@ with open("npl/doc-text") as f, open(os.path.join(npl_output_path, "npl.json"), 
         }
         json.dump(doc_dict, g)
         g.write("\n")
+        count += 1
     
     print(f"Wrote {count} records to disk")
 
 pattern = r"(\d+)\n(.*?)\n/"
-with open("npl/query-text") as f, open(os.path.join(npl_output_path, "queries.json"), "w") as g:
+with open("download/npl/query-text") as f, open(os.path.join(npl_output_path, "queries.json"), "w") as g:
     document = f.read()
     queries = []
     for match in re.findall(pattern, document, re.DOTALL):
@@ -178,13 +182,9 @@ with open("npl/query-text") as f, open(os.path.join(npl_output_path, "queries.js
     print(f"Wrote {len(queries)} queries to disk")
 
 pattern = r"(\d+)\n(.*?)\n   /"
-with open("npl/rlv-ass") as f, open(os.path.join(npl_output_path, "qrels-treceval.txt"), "w") as g:
+with open("download/npl/rlv-ass") as f, open(os.path.join(npl_output_path, "qrels-treceval.txt"), "w") as g:
     document = f.read()
-    i = 0
     for match in re.findall(pattern, document, re.DOTALL):
         query_id = match[0]
         for doc_id in match[1].split():
-            i += 1
             g.write(f"{query_id} 0 {doc_id} 1\n")
-   
-    print(f"Wrote {i} record-query relevances to disk")

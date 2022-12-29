@@ -1,10 +1,12 @@
+import argparse
 import json
-import sys
 from elasticsearch import Elasticsearch
 
 
-INDEXNAME = "medindex"
-SIZE = 1000
+parser = argparse.ArgumentParser()
+parser.add_argument("queries", type=str, help="Input file with queries")
+parser.add_argument("indexname", type=str, help="Elasticsearch index name")
+args = parser.parse_args()
 
 def res(results, query="1", tag="tag"):
     # process query results and output them in trec_eval format
@@ -19,7 +21,7 @@ def res(results, query="1", tag="tag"):
 es = Elasticsearch("http://localhost:9200")
 
 # load queries in JSON format
-with open(sys.argv[1], "r") as infile:
+with open(args.queries, "r") as infile:
     queries = json.loads(infile.read())
     queries_list = queries["QUERIES"]
 
@@ -34,8 +36,8 @@ for query in queries_list:
         }
     }
     response = es.search(
-        index=INDEXNAME,
+        index=args.indexname,
         query=query_dict,
-        size=SIZE
+        size=1000
     )
     res(response["hits"]["hits"], num)

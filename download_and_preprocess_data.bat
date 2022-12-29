@@ -1,4 +1,4 @@
-::mkdir download
+mkdir download
 cd download
 mkdir med
 mkdir cacm

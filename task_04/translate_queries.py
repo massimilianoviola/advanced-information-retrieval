@@ -1,23 +1,22 @@
-
-# ! DO NOT USE THIS SCRIPT WITHOUT TALKING TO ME FIRST! - Nico
-# * you need the api key and must know about the limitations of the free api
-
 # Setup:
 # pip install --upgrade deepl
 # requires Deepl API key stored in deepl_auth.key file
 # can be obtained from https://www.deepl.com/de/pro-api?cta=header-pro-api/ with free account
+# * feel free to contact me for my key - Nico
 
 import deepl
 from os.path import exists
+import io
 
 # todo set via command line argument
 TARGET_LANG = 'DE'
 SOURCE_LANG = 'EN'
-QUERIES_FILE = './npl/data/queries.json'
+QUERIES_FILE = './data/cacm/queries_DE.json'
+API_KEY_FILE = './task_04/deepl_auth.key'
 
 if __name__ == '__main__':
     # retrieve API key from deepl_auth.key
-    with open('./task4/deepl_auth.key', 'r') as f:
+    with open(API_KEY_FILE, 'r') as f:
         auth_key = f.read()
 
     translator = deepl.Translator(auth_key)
@@ -36,26 +35,29 @@ if __name__ == '__main__':
     if exists(translated_queries_file):
         print("Translated queries already exists: " + translated_queries_file)
         print("Manually delete this file if you want to re-translate the queries.")
-        exit(0)
+        exit(1)
 
-    # read queries from file
-    with open(QUERIES_FILE, 'r') as f:
+# read queries from file
+    with io.open(QUERIES_FILE, 'r', encoding="UTF8") as f:
         queries = f.read()  # json as string
 
     # translate queries
-    # ! does not properly return special characters like "ä", "ö", "ü", "ß"
-    # ! either retranslate with different settings or manually replace them
-    # ? capitalization is also somewhat off 
-    # ? probably not a problem for our use case
-    result = translator.translate_text(queries,
-                                       target_lang=TARGET_LANG,
-                                       source_lang=SOURCE_LANG,
-                                       formality='more',
-                                       preserve_formatting=True)
+    # ? capitalization is sometimes off - probably no problem for our use case
+    translated_queries = translator.translate_text(queries,
+                                                   target_lang=TARGET_LANG,
+                                                   source_lang=SOURCE_LANG,
+                                                   formality='more',
+                                                   preserve_formatting=True).__str__()
+
+    # replace ABFRAGE/ANFRAGE/FRAGE with QUERY
+    translated_queries = translated_queries.replace("ABFRAGE", "QUERY")
+    translated_queries = translated_queries.replace("ANFRAGE", "QUERY")
+    translated_queries = translated_queries.replace("FRAGE", "QUERY")
 
     # write translated queries to file
-    with open(translated_queries_file, 'w') as f:
-        f.write(result.__str__())
+    # * io + UTF8 encoding is required to write special characters like ä, ö, ü, ß
+    with io.open(translated_queries_file, 'w', encoding="UTF8") as f:
+        f.write(translated_queries)
 
     # print api usage
     usage = translator.get_usage()
@@ -65,3 +67,5 @@ if __name__ == '__main__':
         print(f"Character usage: {usage.character.count} of {usage.character.limit}")
     if usage.document.valid:
         print(f"Document usage: {usage.document.count} of {usage.document.limit}")
+
+    exit(0)

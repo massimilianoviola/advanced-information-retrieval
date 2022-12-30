@@ -13,10 +13,7 @@ query_template = {
             "match_all": {}
         },
         "script": {
-            "source": """
-                        double value = dotProduct(params.query_embedd, 'EMBEDD');
-                        return sigmoid(1, Math.E, -value); 
-                      """,
+            "source": "dotProduct(params.query_embedd, 'EMBEDD') + 1.0", # dotProduct is the same as cosineSimilarity on normalized vectors
             "params": {"query_embedd": None}
         }
     }

@@ -9,8 +9,8 @@ for data_set in ["cacm", "med", "npl"]:
         index_config = {
             "mappings": {
                 "properties": {
-                    "id": {"type": "text"},
-                    "document": {"type": "dense_vector", "dims": 300}
+                    "DOCID": {"type": "text"},
+                    "EMBEDD": {"type": "dense_vector", "dims": 300}
                 }
             }
         }

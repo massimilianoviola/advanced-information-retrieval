@@ -9,7 +9,7 @@ for data_set in ["cacm", "med", "npl"]:
             input_doc = json.loads(input_doc)
             output_doc = {}
             output_doc["DOCID"] = input_doc["DOCID"]
-            output_doc["EMBEDD"] = model.encode(input_doc["TEXT"]).tolist()
+            output_doc["EMBEDD"] = model.encode(input_doc["TEXT"], normalize_embeddings=True).tolist()
             json.dump(output_doc, output_docs, ensure_ascii=False)
             output_docs.write("\n")
 
@@ -19,7 +19,7 @@ for data_set in ["cacm", "med", "npl"]:
         for input_query in json.loads(input_queries.read())["QUERIES"]:
             output_query = {}
             output_query["QUERYID"] = input_query["QUERYID"]
-            output_query["QUERY"] = model.encode(input_query["QUERY"]).tolist()
+            output_query["QUERY"] = model.encode(input_query["QUERY"], normalize_embeddings=True).tolist()
             output_queries_list.append(output_query)
         
         json.dump(output_queries_dict, output_queries, ensure_ascii=False)

@@ -1,6 +1,4 @@
 *.key
 
 experiment*
-output/
-result/
 *_embed_*

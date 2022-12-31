@@ -14,6 +14,7 @@ es = Elasticsearch("http://localhost:9200", max_retries=5, retry_on_timeout=True
 
 if args.verbose:
     print(f"Indexing {args.filename} documents in index {args.indexname} ...")
+
 # open the document file passed to the command line
 with open(args.filename, "r") as infile:
     ndoc = 0

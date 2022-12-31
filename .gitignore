@@ -1,1 +1,6 @@
 *.key
+tmp.py
+experiment*
+*_embed_*
+__pycache__/
+

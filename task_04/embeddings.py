@@ -17,6 +17,7 @@ for data_set in DATA_SETS:
     output_docs_file = f"./data/{data_set}/{MODEL_SHORTCUT}_embed_{data_set}.json"
 
     # read input docs and write embeddings to output docs
+    print(f"Embedding docs for {data_set}...")
     with open(input_docs_file, "r") as input_docs, open(output_docs_file, "w") as output_docs:
         for input_doc in input_docs:
             input_doc = json.loads(input_doc)
@@ -24,10 +25,12 @@ for data_set in DATA_SETS:
             output_doc["DOCID"] = input_doc["DOCID"]
             output_doc["EMBEDD"] = model.encode(input_doc["TEXT"], normalize_embeddings=True).tolist()
             json.dump(output_doc, output_docs, ensure_ascii=False)
-            output_docs.write("\n") # new line after each doc makes each doc separate json object
+            # new line after each doc makes each doc separate json object
+            output_docs.write("\n")
 
     # embed queries for each language
     for language in LANGUAGES:
+        print(f"Embedding queries for {data_set} {language}...")
         input_queries_file = f"./data/{data_set}/queries_{language}.json"
         output_queries_file = f"./data/{data_set}/{MODEL_SHORTCUT}_embed_queries_{language}.json"
 

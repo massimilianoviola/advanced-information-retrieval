@@ -12,24 +12,24 @@ for data_set in DATA_SETS:
 
     # create index
     if not es.indices.exists(index=index_name):
-        index_config = {
-            "mappings": {
-                "properties": {
-                    "DOCID": {
-                        "type": "text"
-                    },
-                    "EMBEDD": {
-                        "type": "dense_vector",
-                        "dims": EMBEDD_DIMENSION
-                    }
+        index_mappings = {
+            "properties": {
+                "DOCID": {
+                    "type": "text"
+                },
+                "EMBEDD": {
+                    "type": "dense_vector",
+                    "dims": EMBEDD_DIMENSION
                 }
             }
         }
-        es.options(ignore=400)
-        es.indices.create(index=index_name, body=index_config)
+        es.options(ignore_status=400)
+        es.indices.create(index=index_name, mappings=index_mappings)
+        print(f"Created index {index_name}")
 
     # index documents
     with open(f"./data/{data_set}/{MODEL_SHORTCUT}_embed_{data_set}.json", "r") as docs:
         for doc in docs:
             doc = json.loads(doc)
             es.index(index=index_name, id=doc["DOCID"], document=doc)
+        print(f"Indexed documents for {data_set}")

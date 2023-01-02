@@ -7,7 +7,7 @@ os.makedirs("./task_04/results", exist_ok=True)
 
 # ? add Italian and Czech
 # ? is English also needed?
-LANGUAGES = ["DE"]
+LANGUAGES = ["DE", "EN"]
 DATA_SETS = ["cacm", "med", "npl"]
 MODEL_SHORTCUT = "ml_miniLM_L12_v2"
 
@@ -28,16 +28,19 @@ query_template = {
     }
 }
 
+query_params = query_template["script_score"]["script"]["params"]
+
 # execute search for each data set and language
 for data_set in DATA_SETS:
     for language in LANGUAGES:
-        index_name = f"{MODEL_SHORTCUT}_{data_set}"
+        index_name = f"{MODEL_SHORTCUT}_{data_set}".lower()
 
         queries_file = f"./data/{data_set}/{MODEL_SHORTCUT}_embed_queries_{language}.json"
-        results_file = f"./task_04/outputs/{MODEL_SHORTCUT}_{data_set}_{language}.txt"
+        outputs_file = f"./task_04/outputs/{MODEL_SHORTCUT}_{data_set}_{language}.txt"
 
-        with open(queries_file, "r") as queries, open(results_file, "w") as results:
+        with open(queries_file, "r") as queries, open(outputs_file, "w") as outputs:
             for query in json.loads(queries.read())["QUERIES"]:
+                query_params["query_embedd"] = query["QUERY"]
                 response = es.search(index=index_name, query=query_template, size=1000)
                 query_id = query["QUERYID"]
                 for rank, hit in enumerate(response["hits"]["hits"]):
@@ -48,7 +51,7 @@ for data_set in DATA_SETS:
                           hit["_score"],
                           "tag",
                           sep="\t",
-                          file=results)
+                          file=outputs)
 
 # evaluate results with trec_eval
 for data_set in DATA_SETS:

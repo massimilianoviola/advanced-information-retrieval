@@ -3,7 +3,8 @@ from sentence_transformers import SentenceTransformer
 
 # ? add Italian and Czech
 # ? is English also needed?
-LANGUAGES = ["DE"]
+LANGUAGES = ["EN", "DE"]
+# LANGUAGES = ["EN", "DE", "IT", "CS"]
 DATA_SETS = ["cacm", "med", "npl"]
 MODEL_SHORTCUT = "ml_miniLM_L12_v2"
 

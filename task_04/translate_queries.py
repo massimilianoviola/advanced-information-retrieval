@@ -21,27 +21,24 @@ if __name__ == '__main__':
 
     translator = deepl.Translator(auth_key)
 
-    # read queries from file
+    # create file name for translated queries
     queries_file_without_extension = QUERIES_FILE[:QUERIES_FILE.rfind('.')]
     queries_file_extension = QUERIES_FILE[QUERIES_FILE.rfind('.') + 1:]
     translated_queries_file = queries_file_without_extension + "_" + TARGET_LANG + "." + queries_file_extension
 
-    # print some info
-    print("Translating queries from " + SOURCE_LANG + " to " + TARGET_LANG + " using DeepL API.")
-    print("Reading queries from: " + QUERIES_FILE)
-    print("Writing translated queries to: " + translated_queries_file + "\n")
-
     # do not translate if translated file already exists
     if exists(translated_queries_file):
-        print("Translated queries already exists: " + translated_queries_file)
+        print("Translated queries already exist: " + translated_queries_file)
         print("Manually delete this file if you want to re-translate the queries.")
         exit(1)
 
-# read queries from file
+    # read queries from file
+    print("Reading queries from: " + QUERIES_FILE)
     with io.open(QUERIES_FILE, 'r', encoding="UTF8") as f:
         queries = f.read()  # json as string
 
     # translate queries
+    print("Translating queries from " + SOURCE_LANG + " to " + TARGET_LANG + " using DeepL API.")
     # ? capitalization is sometimes off - probably no problem for our use case
     translated_queries = translator.translate_text(queries,
                                                    target_lang=TARGET_LANG,
@@ -55,6 +52,7 @@ if __name__ == '__main__':
     translated_queries = translated_queries.replace("FRAGE", "QUERY")
 
     # write translated queries to file
+    print("Writing translated queries to: " + translated_queries_file + "\n")
     # * io + UTF8 encoding is required to write special characters like ä, ö, ü, ß
     with io.open(translated_queries_file, 'w', encoding="UTF8") as f:
         f.write(translated_queries)

@@ -29,7 +29,11 @@ for data_set in DATA_SETS:
 
     # index documents
     with open(f"./data/{data_set}/{MODEL_SHORTCUT}_embed_{data_set}.json", "r") as docs:
+        doc_count = 0
         for doc in docs:
             doc = json.loads(doc)
             es.index(index=index_name, id=doc["DOCID"], document=doc)
-        print(f"Indexed documents for {data_set}")
+            doc_count += 1
+            if doc_count % 500 == 0:
+                print(f"Indexed {doc_count} documents for {data_set}")
+        print(f"Indexed all documents for {data_set}")

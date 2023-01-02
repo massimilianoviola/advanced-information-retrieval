@@ -8,7 +8,7 @@ EMBEDD_DIMENSION = 384
 es = Elasticsearch("http://localhost:9200")
 
 for data_set in DATA_SETS:
-    index_name = f"{MODEL_SHORTCUT}_{data_set}"
+    index_name = f"{MODEL_SHORTCUT}_{data_set}".lower()  # index names must be lowercase
 
     # create index
     if not es.indices.exists(index=index_name):
@@ -25,7 +25,8 @@ for data_set in DATA_SETS:
                 }
             }
         }
-        es.indices.create(index=index_name, body=index_config, ignore=400)
+        es.options(ignore=400)
+        es.indices.create(index=index_name, body=index_config)
 
     # index documents
     with open(f"./data/{data_set}/{MODEL_SHORTCUT}_embed_{data_set}.json", "r") as docs:

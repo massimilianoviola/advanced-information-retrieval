@@ -1,9 +1,6 @@
 import json
 from elasticsearch import Elasticsearch
-
-DATA_SETS = ["cacm", "med", "npl"]
-MODEL_SHORTCUT = "ml_miniLM_L12_v2"
-EMBEDD_DIMENSION = 384
+from constants import *
 
 es = Elasticsearch("http://localhost:9200")
 

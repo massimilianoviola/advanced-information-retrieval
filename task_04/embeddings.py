@@ -1,14 +1,8 @@
 import json
 from sentence_transformers import SentenceTransformer
+from constants import *
 
-# ? add Italian and Czech
-# ? is English also needed?
-LANGUAGES = ["EN", "DE"]
-# LANGUAGES = ["EN", "DE", "IT", "CS"]
-DATA_SETS = ["cacm", "med", "npl"]
-MODEL_SHORTCUT = "ml_miniLM_L12_v2"
-
-model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
+model = SentenceTransformer(MODEL)
 
 # todo fine tune model?
 

@@ -1,10 +1,12 @@
 from os.path import exists
 import io
 import json
+from xml.etree.ElementTree import tostring
+
 import sentencepiece as spm
 from transformers import PegasusForConditionalGeneration, PegasusTokenizer
 
-DATA_FILE = '/home/manuel/PycharmProjects/advanced-information-retrieval/data/cacm/cacm.json'
+DATA_FILE = '/home/manuel/PycharmProjects/advanced-information-retrieval/data/med/med.json'
 TARGET_LANG = 'DE'
 
 if __name__ == '__main__':
@@ -42,13 +44,19 @@ if __name__ == '__main__':
         encode_token = pegasus_model.generate(**token)
         # decode the token to get words
         decode_token = pegasus_tokenizer.decode(encode_token[0], skip_special_tokens=True)
-        print(decode_token)
+        print(i)
         json_write_out_objects.append(decode_token)
 
     doc_id = 1
+    str1 = "{\"DOCID\": \""
+    str2 = "\", \"TEXT\": \""
+    str3 = "\"}"
     with open(summarized_data_file, 'w+') as f:
         for line in json_write_out_objects:
             # Parse the line as a JSON object
-            f.write("{\"DOCID\": \"{}\", \"TEXT\": \"{}\"}".format(doc_id, line))
+            #   {"DOCID": "1", "TEXT": "Preliminary Report-International Algebraic Language"}
+            result_string = str1 + str(doc_id) + str2 + line + str3+ "\n"
+            f.write(result_string)
             doc_id += 1
             print("Current ", doc_id)
+

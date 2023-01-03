@@ -41,9 +41,11 @@ for data_set in DATA_SETS:
         with open(queries_file, "r") as queries, open(outputs_file, "w") as outputs:
             for query in json.loads(queries.read())["QUERIES"]:
                 query_params["query_embedd"] = query["QUERY"]
-                response = es.search(index=index_name, query=query_template, size=1000)
+                response = es.search(index=index_name, query=query_template,
+                                     size=1000)  # return 1000 most relevant documents
                 query_id = query["QUERYID"]
                 for rank, hit in enumerate(response["hits"]["hits"]):
+                    # input format: query_id Q0 doc_id rank_of_document score_of_document tag_for_current_run
                     print(query_id,
                           "Q0",
                           hit["_source"]["DOCID"],
@@ -56,6 +58,8 @@ for data_set in DATA_SETS:
 # evaluate results with trec_eval
 for data_set in DATA_SETS:
     for language in LANGUAGES:
+        # calculate Mean Average Precision (MAP) using existing relevancies (qrels-treceval.txt) and search results (outputs)
+        # store in results: map queryID score
         os.system(
             f"trec_eval -m map -q ./data/{data_set}/qrels-treceval.txt ./task_04/outputs/{MODEL_SHORTCUT}_{data_set}_{language}.txt > ./task_04/results/map_{MODEL_SHORTCUT}_{data_set}_{language}.txt"
         )

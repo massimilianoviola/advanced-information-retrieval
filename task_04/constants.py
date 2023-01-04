@@ -1,9 +1,9 @@
 MODEL_SHORTCUT = "ml_miniLM_L12_v2"
-MODEL_SHORTCUT = "ml_mpnet_base_v2"
 MODEL_SHORTCUT = "dbmlc_v1"
+MODEL_SHORTCUT = "ml_mpnet_base_v2"
 
-# ? Italian and Czech
 LANGUAGES = ["EN", "DE"]
+# ? Italian and Czech
 # LANGUAGES = ["EN", "DE", "IT", "CS"]
 
 DATA_SETS = ["cacm", "med", "npl"]

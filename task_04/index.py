@@ -32,5 +32,5 @@ for data_set in DATA_SETS:
             es.index(index=index_name, id=doc["DOCID"], document=doc)
             doc_count += 1
             if doc_count % 500 == 0:
-                print(f"Indexed {doc_count} documents for {data_set}")
+                print(f"\tIndexed {doc_count} documents for {data_set}")
         print(f"Indexed all documents for {data_set}")

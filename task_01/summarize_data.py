@@ -4,21 +4,35 @@ import json
 from xml.etree.ElementTree import tostring
 
 import sentencepiece as spm
+from numba.cuda import jit
 from transformers import PegasusForConditionalGeneration, PegasusTokenizer
 
-DATA_FILE = '/home/manuel/PycharmProjects/advanced-information-retrieval/data/med/med.json'
-TARGET_LANG = 'DE'
+DATA_FILE = '/home/manuel/PycharmProjects/advanced-information-retrieval/data/npl/npl.json'
+TARGET_LANG = 'EN'
+
+#GPU optimisation
+@jit(forceobj=True)
+def sum():
+    for i in range(len(json_read_in_objects)):
+        # Use tokenizer on the text
+        token = pegasus_tokenizer.encode(json_read_in_objects[i]['TEXT'], return_tensors='pt', truncation=True)
+        # encode the token
+        encode_token = pegasus_model.generate(token)
+        # decode the token to get words
+        decode_token = pegasus_tokenizer.decode(encode_token[0], skip_special_tokens=True)
+        print(i)
+        json_write_out_objects.append(decode_token)
 
 if __name__ == '__main__':
     data_file_without_extension = DATA_FILE[:DATA_FILE.rfind('.')]
     data_file_extension = DATA_FILE[DATA_FILE.rfind('.') + 1:]
-    summarized_data_file = data_file_without_extension + "_" + "summarize" + "_" + TARGET_LANG + "_" + data_file_extension
+    summarized_data_file = data_file_without_extension + "_" + "summarize" + "_2" + TARGET_LANG + "_" + data_file_extension
 
-    # do not summarize if summarized file already exists
-    # if exists(summarized_data_file):
-    #    print("Translated queries already exist: " + summarized_data_file)
-    #    print("Manually delete this file if you want to re-summarize the queries.")
-    #    exit(1)
+    #do not summarize if summarized file already exists
+    if exists(summarized_data_file):
+        print("Translated queries already exist: " + summarized_data_file)
+        print("Manually delete this file if you want to re-summarize the queries.")
+        exit(1)
     # read data from file
     print("Reading data from: " + DATA_FILE)
     json_read_in_objects = []
@@ -37,7 +51,8 @@ if __name__ == '__main__':
 
     json_write_out_objects = []
 
-    for i in range(len(json_read_in_objects)):
+
+    for i in range(6000,11000):
         # Use tokenizer on the text
         token = pegasus_tokenizer(json_read_in_objects[i]['TEXT'], return_tensors="pt", truncation=True)
         # encode the token
@@ -47,7 +62,7 @@ if __name__ == '__main__':
         print(i)
         json_write_out_objects.append(decode_token)
 
-    doc_id = 1
+    doc_id = 6001
     str1 = "{\"DOCID\": \""
     str2 = "\", \"TEXT\": \""
     str3 = "\"}"

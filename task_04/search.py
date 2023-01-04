@@ -1,15 +1,10 @@
 import json
 import os
 from elasticsearch import Elasticsearch
+from constants import *
 
 os.makedirs("./task_04/outputs", exist_ok=True)
 os.makedirs("./task_04/results", exist_ok=True)
-
-# ? add Italian and Czech
-# ? is English also needed?
-LANGUAGES = ["DE", "EN"]
-DATA_SETS = ["cacm", "med", "npl"]
-MODEL_SHORTCUT = "ml_miniLM_L12_v2"
 
 es = Elasticsearch("http://localhost:9200")
 
@@ -18,9 +13,11 @@ query_template = {
         "query": {
             "match_all": {}
         },
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting-using.html
         "script": {
-            "source":
-                "dotProduct(params.query_embedd, 'EMBEDD') + 1.0",  # dotProduct is the same as cosineSimilarity on normalized vectors
+            "source":  #"cosineSimilarity(params.query_embedd, 'EMBEDD') + 1.0",  # ! does this work?
+                # dotProduct is the same as cosineSimilarity on normalized vectors
+            "dotProduct(params.query_embedd, 'EMBEDD') + 1.0",
             "params": {
                 "query_embedd": None
             }

@@ -12,7 +12,7 @@
 
 # ml_mpnet_base_v2
 # german
-./trec_eval -m map -q ./data/cacm/qrels-treceval.txt ./task_04/outputs/ml_mpnet_base_v2_cacm_DE.txt > ./task_04/results/map_ml_ml_mpnet_base_v2_cacm_DE.txt
+./trec_eval -m map -q ./data/cacm/qrels-treceval.txt ./task_04/outputs/ml_mpnet_base_v2_cacm_DE.txt > ./task_04/results/map_ml_mpnet_base_v2_cacm_DE.txt
 ./trec_eval -m map -q ./data/med/qrels-treceval.txt ./task_04/outputs/ml_mpnet_base_v2_med_DE.txt > ./task_04/results/map_ml_mpnet_base_v2_med_DE.txt
 ./trec_eval -m map -q ./data/npl/qrels-treceval.txt ./task_04/outputs/ml_mpnet_base_v2_npl_DE.txt > ./task_04/results/map_ml_mpnet_base_v2_npl_DE.txt
 

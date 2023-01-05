@@ -3,10 +3,10 @@ import os
 from elasticsearch import Elasticsearch
 from constants import *
 
-os.makedirs("./task_04/outputs", exist_ok=True)
-os.makedirs("./task_04/results", exist_ok=True)
+es = Elasticsearch(ES_URL)
 
-es = Elasticsearch("http://localhost:9200")
+# create outputs folder
+os.makedirs("./task_04/outputs", exist_ok=True)
 
 query_template = {
     "script_score": {
@@ -15,7 +15,7 @@ query_template = {
         },
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting-using.html
         "script": {
-            "source":  #"cosineSimilarity(params.query_embedd, 'EMBEDD') + 1.0",  # ! does this work?
+            "source":  #"cosineSimilarity(params.query_embedd, 'EMBEDD') + 1.0", 
                 # dotProduct is the same as cosineSimilarity on normalized vectors
             "dotProduct(params.query_embedd, 'EMBEDD') + 1.0",
             "params": {
@@ -30,7 +30,7 @@ query_params = query_template["script_score"]["script"]["params"]
 # execute search for each data set and language
 for data_set in DATA_SETS:
     for language in LANGUAGES:
-        index_name = f"{MODEL_SHORTCUT}_{data_set}".lower()
+        index_name = f"{MODEL_SHORTCUT}_{data_set}_finetuned".lower()
 
         queries_file = f"./data/{data_set}/{MODEL_SHORTCUT}_embed_queries_{language}.json"
         outputs_file = f"./task_04/outputs/{MODEL_SHORTCUT}_{data_set}_{language}.txt"
@@ -51,12 +51,3 @@ for data_set in DATA_SETS:
                           "tag",
                           sep="\t",
                           file=outputs)
-
-# evaluate results with trec_eval
-for data_set in DATA_SETS:
-    for language in LANGUAGES:
-        # calculate Mean Average Precision (MAP) using existing relevancies (qrels-treceval.txt) and search results (outputs)
-        # store in results: map queryID score
-        os.system(
-            f"trec_eval -m map -q ./data/{data_set}/qrels-treceval.txt ./task_04/outputs/{MODEL_SHORTCUT}_{data_set}_{language}.txt > ./task_04/results/map_{MODEL_SHORTCUT}_{data_set}_{language}.txt"
-        )

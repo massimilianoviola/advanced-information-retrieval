@@ -5,6 +5,8 @@ from constants import *
 
 model = SentenceTransformer(MODEL, device="cuda")
 
+# todo create one model for each data set
+
 # load documents for each data set
 docs = []
 for data_set in DATA_SETS:
@@ -44,6 +46,8 @@ random.shuffle(anchor_positive_pairs)
 # * however only dataloader in sentence_transformers
 dataloader = datasets.NoDuplicatesDataLoader(anchor_positive_pairs, batch_size=BATCH_SIZE)
 
+'''
+# free up memory if needed
 # garbage collect docs
 import torch
 torch.cuda.empty_cache()
@@ -51,7 +55,7 @@ import gc
 del docs
 del anchor_positive_pairs
 gc.collect()
-#print(torch.cuda.memory_summary(device=None, abbreviated=False))
+'''
 
 # fine-tune model with anchor-positive pairs using MNR loss
 loss = losses.MultipleNegativesRankingLoss(model=model)

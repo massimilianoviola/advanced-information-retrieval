@@ -2,10 +2,11 @@ import json
 from elasticsearch import Elasticsearch
 from constants import *
 
-es = Elasticsearch("http://localhost:9200")
+es = Elasticsearch(ES_URL)
 
 for data_set in DATA_SETS:
-    index_name = f"{MODEL_SHORTCUT}_{data_set}".lower()  # index names must be lowercase
+    # todo separate index for fine-tuned models
+    index_name = f"{MODEL_SHORTCUT}_{data_set}_finetuned".lower()  # index names must be lowercase
 
     # create index
     if not es.indices.exists(index=index_name):

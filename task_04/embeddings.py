@@ -2,9 +2,8 @@ import json
 from sentence_transformers import SentenceTransformer
 from constants import *
 
-model = SentenceTransformer(MODEL)
-
-# todo fine tune model?
+# load local, pretrained, fine-tuned model
+model = SentenceTransformer(MODEL_PATH)
 
 # create embeddings for each data set
 for data_set in DATA_SETS:

@@ -2,6 +2,7 @@ import json
 from sentence_transformers import SentenceTransformer
 from constants import *
 
+
 # load local, pretrained, fine-tuned model
 model = SentenceTransformer(MODEL_PATH)
 

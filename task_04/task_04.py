@@ -29,14 +29,15 @@ for data_set in DATA_SETS:
         # translate queries to target language
         for language in LANGUAGES:
             os.system(
-                f"python3 translate.py -l EN -s ./data/{data_set}/queries.json -t ./data/{data_set}/queries_{language}.json -k ./deepl_auth.key"
+                f"python3 translate.py -l EN -s ./data/{data_set}/queries.json -t ./data/{data_set}/queries_{language}.json -d ./deepl_auth.key"
             )
 
         model_path = f"./task_04/models/{data_set}_{model_shortcut}/"
+        # model_path = f"./task_04/models/{model_shortcut}/"  # todo
 
         # finetune models on the data set
         os.system(
-            f"python3 finetune.py -m {model} -d ./data/{data_set}/{data_set}.json -d {model_path} -e {EPOCHS} -w {WARMUP_STEPS} -b {BATCH_SIZE}"
+            f"python3 finetune.py -m {model} -d ./data/{data_set}/{data_set}.json -f {model_path} -e {EPOCHS} -w {WARMUP_STEPS} -b {BATCH_SIZE}"
         )
 
         # convert documents to embeddings and create index in ElasticSearch
@@ -56,3 +57,4 @@ for data_set in DATA_SETS:
             os.system(
                 f"trec_eval -m map -q ./data/{data_set}/qrels-treceval.txt ./task_04/outputs/{model_shortcut}_{data_set}_{language}.txt > ./task_04/results/map_{model_shortcut}_{data_set}_{language}.txt"
             )
+        exit(1)

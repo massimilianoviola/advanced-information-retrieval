@@ -2,15 +2,14 @@ import json
 import random
 import argparse
 from sentence_transformers import SentenceTransformer, InputExample, losses, datasets
-from constants import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-m","--model", type=str, help="Model name")
-parser.add_argument("-d","--documents", type=str, help="Path to documents")
-parser.add_argument("-f","--folder_model", type=str, help="Folder to save model to")
-parser.add_argument("-e","--epochs", type=int, help="Number of epochs")
-parser.add_argument("-w","--warmup_steps", type=int, help="Number of warmup steps")
-parser.add_argument("-b","--batch_size", type=int, help="Batch size")
+parser.add_argument("-m", "--model", type=str, help="Model name")
+parser.add_argument("-d", "--documents", type=str, help="Path to documents")
+parser.add_argument("-f", "--folder_model", type=str, help="Folder to save model to")
+parser.add_argument("-e", "--epochs", type=int, help="Number of epochs")
+parser.add_argument("-w", "--warmup_steps", type=int, help="Number of warmup steps")
+parser.add_argument("-b", "--batch_size", type=int, help="Batch size")
 args = parser.parse_args()
 
 model = SentenceTransformer(args.model, device="cuda")

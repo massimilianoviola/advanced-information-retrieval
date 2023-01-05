@@ -5,9 +5,9 @@ from sentence_transformers import SentenceTransformer
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("filename", type=str, help="Input file with documents to index")
-parser.add_argument("indexname", type=str, help="Elasticsearch index name")
-parser.add_argument("model", type=str, help="SentenceTransformer model to use")
+parser.add_argument("-f", "--filename", type=str, help="Input file with documents to index")
+parser.add_argument("-i", "--indexname", type=str, help="Elasticsearch index name")
+parser.add_argument("-m", "--model", type=str, help="SentenceTransformer model to use")
 parser.add_argument("-v", "--verbose", type=int, default=1, choices=[0, 1], help="Increase output verbosity")
 args = parser.parse_args()
 

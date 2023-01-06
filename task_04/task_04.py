@@ -15,8 +15,7 @@ LANGUAGES = ["EN", "DE"]
 # LANGUAGES = ["EN", "DE", "IT", "CS"]
 
 # model fine-tuning
-USE_EXISTING_MODEL = True  # reuse already fine-tuned models
-MODEL_PATH = f"./task_04/models/"
+MODEL_FOLDER = f"./task_04/models"  # where to store fine-tuned models
 EPOCHS = 1
 WARMUP_STEPS = 500  # ? fraction of data set size
 BATCH_SIZE = 16
@@ -29,9 +28,8 @@ for dataset in DATASETS:
                 f"python3 translate.py -l EN -s ./data/{dataset}/queries.json -t ./data/{dataset}/queries_{language}.json -d ./deepl_auth.key"
             )
 
-        model_path = f"{MODEL_PATH}/{dataset}_{model_shortcut}/"
-
         # fine-tune models on the data set
+        model_path = f"{MODEL_FOLDER}/{model_shortcut}_{dataset}/"
         print(f"Fine-tuning {model} on {dataset}...")
         os.system(
             f"python3 finetune.py -m {model} -d ./data/{dataset}/{dataset}.json -f {model_path} -e {EPOCHS} -w {WARMUP_STEPS} -b {BATCH_SIZE}"

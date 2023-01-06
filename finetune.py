@@ -17,10 +17,7 @@ args = parser.parse_args()
 if exists(args.folder_model):
     print("Model already exists: " + args.folder_model)
     print("Manually delete this folder if you want to fine-tune again.")
-    while True:
-        answer = input("Do you want to continue anyway? (y/n): ")
-        if answer == "y":
-            break
+    exit(1)
 
 model = SentenceTransformer(args.model, device="cuda")
 

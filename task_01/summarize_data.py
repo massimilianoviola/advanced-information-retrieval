@@ -58,7 +58,7 @@ if __name__ == '__main__':
     json_write_out_objects = []
 
 
-    for i in range(2):
+    for i in range(len(json_read_in_objects)):
         # Use tokenizer on the text
         token = pegasus_tokenizer(json_read_in_objects[i]['TEXT'], return_tensors="pt", truncation=True)
         # encode the token

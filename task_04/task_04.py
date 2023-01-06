@@ -21,19 +21,15 @@ EPOCHS = 1
 WARMUP_STEPS = 500  # ? fraction of data set size
 BATCH_SIZE = 16
 
-# ElasticSearch
-ES_URL = "http://localhost:9200"  # todo
-
 for data_set in DATA_SETS:
     for model, model_shortcut in zip(MODELS, MODEL_SHORTCUTS):
         # translate queries to target language
         for language in LANGUAGES:
-            os.system(
+            os.system(  # see translate.py regarding the DeepL API key
                 f"python3 translate.py -l EN -s ./data/{data_set}/queries.json -t ./data/{data_set}/queries_{language}.json -d ./deepl_auth.key"
             )
 
         model_path = f"./task_04/models/{data_set}_{model_shortcut}/"
-        # model_path = f"./task_04/models/{model_shortcut}/"  # todo
 
         # finetune models on the data set
         os.system(
@@ -57,4 +53,3 @@ for data_set in DATA_SETS:
             os.system(
                 f"trec_eval -m map -q ./data/{data_set}/qrels-treceval.txt ./task_04/outputs/{model_shortcut}_{data_set}_{language}.txt > ./task_04/results/map_{model_shortcut}_{data_set}_{language}.txt"
             )
-        exit(1)

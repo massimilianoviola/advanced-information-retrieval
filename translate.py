@@ -2,7 +2,6 @@
 # pip install --upgrade deepl
 # requires Deepl API key stored in deepl_auth.key file
 # can be obtained from https://www.deepl.com/de/pro-api?cta=header-pro-api/ with free account
-# * feel free to contact me for my key - Nico
 
 import deepl
 from os.path import exists

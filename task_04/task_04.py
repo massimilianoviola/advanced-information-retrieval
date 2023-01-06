@@ -1,6 +1,6 @@
 import os
 
-DATA_SETS = ["cacm", "med", "npl"]
+DATASETS = ["cacm", "med", "npl"]
 
 # sentence transformers models
 MODELS = [
@@ -16,40 +16,46 @@ LANGUAGES = ["EN", "DE"]
 # LANGUAGES = ["EN", "DE", "IT", "CS"]
 
 # model fine-tuning
+USE_EXISTING_MODEL = True  # reuse already fine-tuned models
 MODEL_PATH = f"./task_04/models/"
 EPOCHS = 1
 WARMUP_STEPS = 500  # ? fraction of data set size
 BATCH_SIZE = 16
 
-for data_set in DATA_SETS:
+for dataset in DATASETS:
     for model, model_shortcut in zip(MODELS, MODEL_SHORTCUTS):
         # translate queries to target language
         for language in LANGUAGES:
-            os.system(  # see translate.py regarding the DeepL API key
-                f"python3 translate.py -l EN -s ./data/{data_set}/queries.json -t ./data/{data_set}/queries_{language}.json -d ./deepl_auth.key"
+            os.system(
+                f"python3 translate.py -l EN -s ./data/{dataset}/queries.json -t ./data/{dataset}/queries_{language}.json -d ./deepl_auth.key"
             )
 
-        model_path = f"./task_04/models/{data_set}_{model_shortcut}/"
+        model_path = f"{MODEL_PATH}/{dataset}_{model_shortcut}/"
 
-        # finetune models on the data set
-        os.system(
-            f"python3 finetune.py -m {model} -d ./data/{data_set}/{data_set}.json -f {model_path} -e {EPOCHS} -w {WARMUP_STEPS} -b {BATCH_SIZE}"
-        )
+        # fine-tune models on the data set
+        if not USE_EXISTING_MODEL:
+            print(f"Fine-tuning {model} on {dataset}...")
+            os.system(
+                f"python3 finetune.py -m {model} -d ./data/{dataset}/{dataset}.json -f {model_path} -e {EPOCHS} -w {WARMUP_STEPS} -b {BATCH_SIZE}"
+            )
+        else:
+            print(f"Using existing fine-tuned model {model_path} for {dataset}...")
 
         # convert documents to embeddings and create index in ElasticSearch
-        print(f"Embedding docs and creating index for {data_set}...")
+        print(f"Embedding docs and creating index for {dataset}...")
         os.system(
-            f"python3 embedding_index.py -f ./data/{data_set}/{data_set}.json -i {model_shortcut.lower()}_{data_set}_finetuned -m {model_path} -v 0"
+            f"python3 embedding_index.py -f ./data/{dataset}/{dataset}.json -i {model_shortcut.lower()}_{dataset}_fine_tuned -m {model_path} -v 0"
         )
 
         # search on indexed documents using queries in target languages
         for language in LANGUAGES:
-            print(f"Searching for {language} queries in {data_set}...")
+            print(f"Searching for {language} queries in {dataset}...")
             os.system(
-                f"python3 embedding_search.py -q ./data/{data_set}/queries_{language}.json -i {model_shortcut.lower()}_{data_set}_finetuned -m {model_path} -o ./task_04/outputs/{model_shortcut}_{data_set}_{language}.txt"
+                f"python3 embedding_search.py -q ./data/{dataset}/queries_{language}.json -i {model_shortcut.lower()}_{dataset}_fine_tuned -m {model_path} -o ./task_04/outputs/{model_shortcut}_{dataset}_{language}.txt"
             )
 
             # evaluating the search results with trec_eval
+            print(f"Evaluating {model_shortcut} on {dataset} with {language} queries...")
             os.system(
-                f"trec_eval -m map -q ./data/{data_set}/qrels-treceval.txt ./task_04/outputs/{model_shortcut}_{data_set}_{language}.txt > ./task_04/results/map_{model_shortcut}_{data_set}_{language}.txt"
+                f"trec_eval -m map -q ./data/{dataset}/qrels-treceval.txt ./task_04/outputs/{model_shortcut}_{dataset}_{language}.txt > ./task_04/results/map_{model_shortcut}_{dataset}_{language}.txt"
             )

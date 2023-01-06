@@ -6,9 +6,14 @@ from xml.etree.ElementTree import tostring
 import sentencepiece as spm
 from numba.cuda import jit
 from transformers import PegasusForConditionalGeneration, PegasusTokenizer
+import argparse
 
-DATA_FILE = '/home/manuel/PycharmProjects/advanced-information-retrieval/data/npl/npl.json'
-TARGET_LANG = 'EN'
+parser = argparse.ArgumentParser()
+parser.add_argument("datafile", type=str, help="Input file")
+args = parser.parse_args()
+
+DATA_FILE = f"../data/{args.datafile}/{args.datafile}.json"
+TARGET_LANG = 'en'
 
 #GPU optimisation
 @jit(forceobj=True)
@@ -26,7 +31,8 @@ def sum():
 if __name__ == '__main__':
     data_file_without_extension = DATA_FILE[:DATA_FILE.rfind('.')]
     data_file_extension = DATA_FILE[DATA_FILE.rfind('.') + 1:]
-    summarized_data_file = data_file_without_extension + "_" + "summarize" + "_2" + TARGET_LANG + "_" + data_file_extension
+    summarized_data_file = data_file_without_extension + "_" + "summarize" + "_" + TARGET_LANG + "." + data_file_extension
+    print(summarized_data_file)
 
     #do not summarize if summarized file already exists
     if exists(summarized_data_file):
@@ -52,7 +58,7 @@ if __name__ == '__main__':
     json_write_out_objects = []
 
 
-    for i in range(6000,11000):
+    for i in range(2):
         # Use tokenizer on the text
         token = pegasus_tokenizer(json_read_in_objects[i]['TEXT'], return_tensors="pt", truncation=True)
         # encode the token
@@ -62,7 +68,7 @@ if __name__ == '__main__':
         print(i)
         json_write_out_objects.append(decode_token)
 
-    doc_id = 6001
+    doc_id = 1
     str1 = "{\"DOCID\": \""
     str2 = "\", \"TEXT\": \""
     str3 = "\"}"
@@ -72,6 +78,7 @@ if __name__ == '__main__':
             #   {"DOCID": "1", "TEXT": "Preliminary Report-International Algebraic Language"}
             result_string = str1 + str(doc_id) + str2 + line + str3+ "\n"
             f.write(result_string)
-            doc_id += 1
             print("Current ", doc_id)
+            doc_id += 1
+
 

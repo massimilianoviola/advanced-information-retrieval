@@ -4,19 +4,13 @@ from elasticsearch import Elasticsearch
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-f", "--filename", type=str, help="Input file with documents to index")
-parser.add_argument("-i", "--indexname", type=str, help="Elasticsearch index name")
+parser.add_argument("filename", type=str, help="Input file with documents to index")
+parser.add_argument("indexname", type=str, help="Elasticsearch index name")
 parser.add_argument("-v", "--verbose", type=int, default=1, choices=[0, 1], help="Increase output verbosity")
 args = parser.parse_args()
 
 # connect to the server
 es = Elasticsearch("http://localhost:9200", max_retries=5, retry_on_timeout=True)
-
-# Check if index already exists
-if es.indices.exists(index=args.indexname):
-    if args.verbose:
-        print(f"Index with name '{args.indexname}' already exist. Delete it with this command: curl -X DELETE \"localhost:9200/{args.indexname}\"")
-    exit(0)
 
 if args.verbose:
     print(f"Indexing {args.filename} documents in index {args.indexname} ...")

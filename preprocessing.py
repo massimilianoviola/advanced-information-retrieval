@@ -4,6 +4,7 @@ import re
 import shutil
 from deep_translator import GoogleTranslator
 from tqdm import tqdm
+from transformers import pipeline
 
 
 ######### CONFIG #########
@@ -18,8 +19,11 @@ npl_output_path = "data/npl"
 os.makedirs(npl_output_path, exist_ok=True)
 
 translator = GoogleTranslator(source="en", target="de")
+summarizer = pipeline("summarization")
+
 TRANSLATE_DOCS = False
 TRANSLATE_QUERIES = True
+SUMMARIZE_DOCS = True
 
 
 ######### MEDLINE #########
@@ -28,7 +32,8 @@ print("Preprocessing Medline...")
 
 with open("download/med/MED.ALL") as f, \
      open(os.path.join(med_output_path, "med.json"), "w") as g, \
-     open(os.path.join(med_output_path, "ger_med.json"), "w") as h:
+     open(os.path.join(med_output_path, "ger_med.json"), "w") as h, \
+     open(os.path.join(med_output_path, "summarized_med.json"), "w") as k:
     lines = ""
     for l in f.readlines():
         lines += "\n" + l.strip() if l.startswith(".") else " " + l.strip()
@@ -57,6 +62,14 @@ with open("download/med/MED.ALL") as f, \
                     }
                     json.dump(ger_doc_dict, h, ensure_ascii=False)
                     h.write("\n")
+                
+                if SUMMARIZE_DOCS:
+                    summarized_doc_dict = {
+                        "DOCID" : doc_id,
+                        "TEXT" : summarizer(text)[0]["summary_text"] if len(text) > 700 else text
+                    }
+                    json.dump(summarized_doc_dict, k, ensure_ascii=False)
+                    k.write("\n")
                 
                 count += 1
                 doc_dict = {} # reset record
@@ -116,7 +129,8 @@ print("Preprocessing CACM...")
 
 with open("download/cacm/cacm.all") as f, \
      open(os.path.join(cacm_output_path, "cacm.json"), "w") as g, \
-     open(os.path.join(cacm_output_path, "ger_cacm.json"), "w") as h:
+     open(os.path.join(cacm_output_path, "ger_cacm.json"), "w") as h, \
+     open(os.path.join(cacm_output_path, "summarized_cacm.json"), "w") as k:
     lines = ""
     for l in f.readlines():
         lines += "\n" + l.strip() if l.startswith(".") else " " + l.strip()
@@ -150,6 +164,15 @@ with open("download/cacm/cacm.all") as f, \
                     }
                     json.dump(ger_doc_dict, h, ensure_ascii=False)
                     h.write("\n")
+
+                text = doc_dict["TEXT"]
+                if SUMMARIZE_DOCS:
+                    summarized_doc_dict = {
+                        "DOCID" : doc_id,
+                        "TEXT" : summarizer(text)[0]["summary_text"] if len(text) > 700 else text
+                    }
+                    json.dump(summarized_doc_dict, k, ensure_ascii=False)
+                    k.write("\n")
                 
                 count += 1
                 doc_dict = {} # reset record
@@ -204,7 +227,7 @@ with open("download/cacm/qrels.text") as f, open(os.path.join(cacm_output_path, 
     for l in lines:
         query_id, doc_id, _, _ = l.split()
         # write in trec_eval format
-        g.write(f"{query_id} 0 {doc_id} 1\n")
+        g.write(f"{int(query_id)} 0 {doc_id} 1\n")
 
 
 ######### NPL #########
@@ -214,7 +237,8 @@ print("Preprocessing NPL...")
 pattern = r"(\d+)\n(.*?)\n   /"
 with open("download/npl/doc-text") as f, \
     open(os.path.join(npl_output_path, "npl.json"), "w") as g, \
-    open(os.path.join(npl_output_path, "ger_npl.json"), "w") as h:
+    open(os.path.join(npl_output_path, "ger_npl.json"), "w") as h, \
+    open(os.path.join(npl_output_path, "summarized_npl.json"), "w") as k:
     document = f.read()
     count = 0
     with tqdm(total=11429) as pbar:
@@ -235,6 +259,14 @@ with open("download/npl/doc-text") as f, \
                 }
                 json.dump(ger_doc_dict, h, ensure_ascii=False)
                 h.write("\n")
+            
+            if SUMMARIZE_DOCS:
+                summarized_doc_dict = {
+                    "DOCID" : doc_id,
+                    "TEXT" : summarizer(text)[0]["summary_text"] if len(text) > 700 else text
+                }
+                json.dump(summarized_doc_dict, k, ensure_ascii=False)
+                k.write("\n")
             
             count += 1
             pbar.update()
@@ -292,3 +324,8 @@ if not TRANSLATE_QUERIES:
     os.remove(os.path.join(med_output_path, "ger_queries.json"))
     os.remove(os.path.join(cacm_output_path, "ger_queries.json"))
     os.remove(os.path.join(npl_output_path, "ger_queries.json"))
+
+if not SUMMARIZE_DOCS:
+    os.remove(os.path.join(med_output_path, "summarized_med.json"))
+    os.remove(os.path.join(cacm_output_path, "summarized_cacm.json"))
+    os.remove(os.path.join(npl_output_path, "summarized_npl.json"))

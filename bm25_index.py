@@ -12,12 +12,12 @@ args = parser.parse_args()
 # connect to the server
 es = Elasticsearch("http://localhost:9200", max_retries=5, retry_on_timeout=True)
 
-#Check if index already exists
+# Check if index already exists
 if es.indices.exists(index=args.indexname):
-    print(f"{args.filename} is already indexed and has the name: {args.indexname}")
-    print("To delete use following command: ")
-    print(f"curl -X DELETE \"localhost:9200/{args.indexname}\"")
-    exit(1)
+    if args.verbose:
+        print(f"Index with name '{args.indexname}' already exist. Delete it with this command: curl -X DELETE \"localhost:9200/{args.indexname}\"")
+    exit(0)
+
 if args.verbose:
     print(f"Indexing {args.filename} documents in index {args.indexname} ...")
 

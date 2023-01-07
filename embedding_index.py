@@ -25,6 +25,10 @@ if not es.indices.exists(index=args.indexname):
             }
         }
     es.indices.create(index=args.indexname, mappings=mappings)
+else:
+    if args.verbose:
+        print(f"Index with name '{args.indexname}' already exist. Delete it with this command: curl -X DELETE \"localhost:9200/{args.indexname}\"")
+    exit(0)
 
 if args.verbose:
     print(f"Indexing {args.filename} documents in index {args.indexname} with {args.model} ...")

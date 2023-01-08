@@ -6,7 +6,7 @@ output_path = "task_04/outputs" # save search script outputs
 result_path = "task_04/results" # save analysis made by trec_eval
 datasets = ["med", "cacm", "npl"]
 models = ["paraphrase-multilingual-MiniLM-L12-v2", "distiluse-base-multilingual-cased-v1", "paraphrase-multilingual-mpnet-base-v2"]
-shortcuts = ["ml_miniLM_L12_v2", "dbmlc_v1", "ml_mpnet_base_v2"]
+shortcuts = ["ml_minilm_l12_v2", "dbmlc_v1", "ml_mpnet_base_v2"]
 
 # write the experiment shell script to be executed via the command line
 with open("task_04/experiment_04.sh", "w") as f:

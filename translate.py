@@ -28,6 +28,8 @@ with open(args.deepl_api_key, 'r') as f:
 translator = deepl.Translator(auth_key)
 
 # check if language is supported by DeepL API
+if language == "EN":
+    language = "EN-US"
 '''
 if args.language not in deepl.LANGUAGES:
     print("Language " + args.language + " is not supported by DeepL API.")
@@ -42,14 +44,14 @@ if exists(target_file):
     exit(1)
 
 # read text from file
-print("Reading " + target_file)
-with io.open(target_file, 'r', encoding="UTF8") as f:
+print("Reading " + source_file)
+with io.open(source_file, 'r', encoding="UTF8") as f:
     text = f.read()  # json as string
 
 # translate text
 print("Translating to " + language + " using DeepL API.")
 # ? capitalization is sometimes off - probably no problem for our use case
-translation = translator.translate_text(text, target_lang=language, formality='more',
+translation = translator.translate_text(text, target_lang=language,
                                         preserve_formatting=True).__str__()
 
 # replace ABFRAGE/ANFRAGE/FRAGE with QUERY

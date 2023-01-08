@@ -22,10 +22,10 @@ BATCH_SIZE = 16
 
 for dataset in DATASETS:
     for model, model_shortcut in zip(MODELS, MODEL_SHORTCUTS):
-        # translate queries to target language
+        # translate English queries to target language
         for language in LANGUAGES:
             os.system(  # see translate.py regarding DeepL API key
-                f"python3 translate.py -l EN -s ./data/{dataset}/queries.json -t ./data/{dataset}/queries_{language}.json -d ./deepl_auth.key"
+                f"python3 translate.py -l {language} -s ./data/{dataset}/queries.json -t ./data/{dataset}/queries_{language}.json -d ./deepl_auth.key"
             )
 
         # fine-tune models on the data set

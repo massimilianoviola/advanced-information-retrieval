@@ -1,5 +1,12 @@
+#Name of the index to search
+#INDEX_NAMES_TO_SEARCH = ["med", "med_summarize_en"]
+INDEX_NAMES_TO_SEARCH = ["cacm", "cacm_summarize_en"]
 
-MODEL_SHORTCUTS = ["glove", "minil6", "minil12", "mpnetv2"]
-MODEL_NAMES = ["average_word_embeddings_glove.6B.300d", "all-MiniLM-L6-v2", "all-MiniLM-L12-v2", "all-mpnet-base-v2"]
-EMBEDD_DIMENSIONS = [300, 384, 384, 768]
-DATA_SETS = ["cacm", "med", "npl"]
+#Query file to use
+#QUERY_FILE = "med/queries"
+QUERY_FILE = "cacm/queries"
+
+
+#Name of the dataset with its root folder
+#FILE_NAMES_TO_INDEX = ["med/med", "med/med_summarize_en"]
+FILE_NAMES_TO_INDEX = ["cacm/cacm", "cacm/cacm_summarize_en"]

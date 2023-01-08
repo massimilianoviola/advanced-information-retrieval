@@ -18,7 +18,7 @@ npl_output_path = "data/npl"
 os.makedirs(npl_output_path, exist_ok=True)
 
 translator = GoogleTranslator(source="en", target="de")
-TRANSLATE_DOCS = False
+TRANSLATE_DOCS = True
 TRANSLATE_QUERIES = True
 
 
@@ -204,7 +204,7 @@ with open("download/cacm/qrels.text") as f, open(os.path.join(cacm_output_path, 
     for l in lines:
         query_id, doc_id, _, _ = l.split()
         # write in trec_eval format
-        g.write(f"{query_id} 0 {doc_id} 1\n")
+        g.write(f"{int(query_id)} 0 {doc_id} 1\n")
 
 
 ######### NPL #########
@@ -278,7 +278,7 @@ with open("download/npl/rlv-ass") as f, open(os.path.join(npl_output_path, "qrel
     for match in re.findall(pattern, document, re.DOTALL):
         query_id = match[0]
         for doc_id in match[1].split():
-            g.write(f"{query_id} 0 {doc_id} 1\n")
+            g.write(f"{int(query_id)} 0 {doc_id} 1\n")
 
 
 ######### REMOVE FILES #########

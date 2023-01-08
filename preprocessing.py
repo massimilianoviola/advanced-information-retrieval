@@ -29,7 +29,6 @@ SUMMARIZE_DOCS = True
 ######### MEDLINE #########
 
 print("Preprocessing Medline...")
-
 with open("download/med/MED.ALL") as f, \
      open(os.path.join(med_output_path, "med.json"), "w") as g, \
      open(os.path.join(med_output_path, "ger_med.json"), "w") as h, \
@@ -80,8 +79,8 @@ with open("download/med/MED.ALL") as f, \
 #Do full summarize of med.json
 os.system(f"python3 full_summarize.py med")
 #Remove quotes from summarized files to have a valid json format
-os.system(f"python3 remove_quotes.py ../data/med/partly_summarized_med.json")
-os.system(f"python3 remove_quotes.py ../data/med/full_summarized_med.json")
+os.system(f"python3 remove_quotes.py ./data/med/partly_summarized_med.json")
+os.system(f"python3 remove_quotes.py ./data/med/full_summarized_med.json")
 
 with open("download/med/MED.QRY") as f, \
      open(os.path.join(med_output_path, "queries.json"), "w") as g, \
@@ -189,8 +188,8 @@ with open("download/cacm/cacm.all") as f, \
 #Do full summarize of cacm.json
 os.system(f"python3 full_summarize.py cacm")
 #Remove quotes from summarized files to have a valid json format
-os.system(f"python3 remove_quotes.py ../data/cacm/partly_summarized_cacm.json")
-os.system(f"python3 remove_quotes.py ../data/cacm/full_summarized_cacm.json")
+os.system(f"python3 remove_quotes.py ./data/cacm/partly_summarized_cacm.json")
+os.system(f"python3 remove_quotes.py ./data/cacm/full_summarized_cacm.json")
 
 with open("download/cacm/query.text") as f, \
      open(os.path.join(cacm_output_path, "queries.json"), "w") as g, \
@@ -288,8 +287,8 @@ with open("download/npl/doc-text") as f, \
 #Do full summarize of npl.json
 os.system(f"python3 full_summarize.py npl")
 #Remove quotes from summarized files to have a valid json format
-os.system(f"python3 remove_quotes.py ../data/npl/partly_summarized_npl.json")
-os.system(f"python3 remove_quotes.py ../data/npl/full_summarized_npl.json")
+os.system(f"python3 remove_quotes.py ./data/npl/partly_summarized_npl.json")
+os.system(f"python3 remove_quotes.py ./data/npl/full_summarized_npl.json")
 
 pattern = r"(\d+)\n(.*?)\n/"
 with open("download/npl/query-text") as f, \

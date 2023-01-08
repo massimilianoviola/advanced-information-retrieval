@@ -2,8 +2,8 @@ import functools
 import os
 
 
-output_path = "output" # save search script outputs
-result_path = "result" # save analysis made by trec_eval
+output_path = "outputs" # save search script outputs
+result_path = "results" # save analysis made by trec_eval
 datasets = ["med", "cacm", "npl"]
 
 # write txt file of the experiment to run via command line

@@ -1,6 +1,7 @@
 deep-translator==1.9.1
 elasticsearch==8.5.3
 matplotlib==3.5.2
+numba==0.56.4 
 numpy==1.23.1
 pandas==1.5.0
 sentence_transformers==2.2.2

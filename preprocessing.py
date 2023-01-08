@@ -76,11 +76,13 @@ with open("download/med/MED.ALL") as f, \
                 pbar.update()
     
     print(f"Wrote {count} records to disk")
-#Do full summarize of med.json
-os.system(f"python3 full_summarize.py med")
-#Remove quotes from summarized files to have a valid json format
-os.system(f"python3 remove_quotes.py ./data/med/partly_summarized_med.json")
-os.system(f"python3 remove_quotes.py ./data/med/full_summarized_med.json")
+
+if SUMMARIZE_DOCS:
+    # do full summarize of med.json
+    os.system(f"python3 full_summarize.py med")
+    # remove quotes from summarized files to have a valid json format
+    os.system(f"python3 remove_quotes.py ./data/med/partly_summarized_med.json")
+    os.system(f"python3 remove_quotes.py ./data/med/full_summarized_med.json")
 
 with open("download/med/MED.QRY") as f, \
      open(os.path.join(med_output_path, "queries.json"), "w") as g, \
@@ -185,11 +187,12 @@ with open("download/cacm/cacm.all") as f, \
     
     print(f"Wrote {count} records to disk")
 
-#Do full summarize of cacm.json
-os.system(f"python3 full_summarize.py cacm")
-#Remove quotes from summarized files to have a valid json format
-os.system(f"python3 remove_quotes.py ./data/cacm/partly_summarized_cacm.json")
-os.system(f"python3 remove_quotes.py ./data/cacm/full_summarized_cacm.json")
+if SUMMARIZE_DOCS:
+    # do full summarize of cacm.json
+    os.system(f"python3 full_summarize.py cacm")
+    # remove quotes from summarized files to have a valid json format
+    os.system(f"python3 remove_quotes.py ./data/cacm/partly_summarized_cacm.json")
+    os.system(f"python3 remove_quotes.py ./data/cacm/full_summarized_cacm.json")
 
 with open("download/cacm/query.text") as f, \
      open(os.path.join(cacm_output_path, "queries.json"), "w") as g, \
@@ -284,11 +287,12 @@ with open("download/npl/doc-text") as f, \
     
     print(f"Wrote {count} records to disk")
 
-#Do full summarize of npl.json
-os.system(f"python3 full_summarize.py npl")
-#Remove quotes from summarized files to have a valid json format
-os.system(f"python3 remove_quotes.py ./data/npl/partly_summarized_npl.json")
-os.system(f"python3 remove_quotes.py ./data/npl/full_summarized_npl.json")
+if SUMMARIZE_DOCS:
+    # do full summarize of npl.json
+    os.system(f"python3 full_summarize.py npl")
+    # remove quotes from summarized files to have a valid json format
+    os.system(f"python3 remove_quotes.py ./data/npl/partly_summarized_npl.json")
+    os.system(f"python3 remove_quotes.py ./data/npl/full_summarized_npl.json")
 
 pattern = r"(\d+)\n(.*?)\n/"
 with open("download/npl/query-text") as f, \
@@ -343,9 +347,6 @@ if not TRANSLATE_QUERIES:
     os.remove(os.path.join(npl_output_path, "ger_queries.json"))
 
 if not SUMMARIZE_DOCS:
-    os.remove(os.path.join(med_output_path, "full_summarized_med.json"))
-    os.remove(os.path.join(cacm_output_path, "full_summarized_cacm.json"))
-    os.remove(os.path.join(npl_output_path, "full_summarized_npl.json"))
     os.remove(os.path.join(med_output_path, "partly_summarized_med.json"))
     os.remove(os.path.join(cacm_output_path, "partly_summarized_cacm.json"))
     os.remove(os.path.join(npl_output_path, "partly_summarized_npl.json"))

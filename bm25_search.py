@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("queries", type=str, help="Input file with queries")
 parser.add_argument("indexname", type=str, help="Elasticsearch index name")
 args = parser.parse_args()
-
+print(f"Searching index: {args.indexname}")
 def res(results, query="1", tag="tag"):
     # process query results and output them in trec_eval format
     rank = 0

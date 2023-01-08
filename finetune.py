@@ -39,7 +39,7 @@ with open(args.documents, "r") as docs_file:
 # create anchor-positive pairs
 # * Assumption:
 # * sentences in same doc tend to be similar
-# * sentences in same doc tend to become less similar as more sentences are between them
+#// sentences in same doc tend to become less similar as more sentences are between them
 anchor_positive_pairs = []
 for doc in docs:
     for i in range(len(doc)):
@@ -47,8 +47,8 @@ for doc in docs:
             # create anchor-positive pair
             anchor_positive_pairs.append(InputExample(texts=[doc[i], doc[j]]))
             # stop if sentences are more than 3 sentences apart
-            if j - i > 3:
-                break
+            # if j - i > 3:
+            #    break
 
 # store shuffled pairs in dataloader - since a DataLoader is required for model.fit()
 random.shuffle(anchor_positive_pairs)

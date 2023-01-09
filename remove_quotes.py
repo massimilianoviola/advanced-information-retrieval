@@ -13,7 +13,8 @@ with open(filename, "r") as in_f:
     for line in in_f:
         start_idx = line.index('"TEXT": "') + len('"TEXT": "')
         end_idx = line.index('"}', start_idx)
-        text = line[start_idx:end_idx].replace('"', " ")
+        text = line[start_idx:end_idx].replace('"', ' ')
+        text = line[start_idx:end_idx].replace('\\', ' ')
         line = line[:start_idx] + text + line[end_idx:]
         parsed_lines.append(line)
 

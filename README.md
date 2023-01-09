@@ -1,12 +1,9 @@
-# advanced-information-retrieval
+# Advanced IR Experiments with Language Models, Summarization and Translation using SBERT, Elasticsearch and trec_eval
 
 This repository contains the implementation of the final project for the **Advanced Information Retrieval** course that took place at TU Graz during the winter semester of 2022. The goal of the project is to perform advanced IR experiments, covering topics such as document summarization, query and document translation, neural and multilingual IR with pre-trained and fine-tuned language models, often compared against traditional BM25-based retrieval. Furthermore, established tools in the IR community, Elasticsearch and trec_eval, are utilized to efficiently implement and easily evaluate complex experiments across multiple datasets.
 
 ## Authors
-Riedl Manuel,
-David Mihola,
-Massimiliano Viola,
-Nico Ohler.
+David Mihola, Manuel Riedl, Massimiliano Viola, Nico Ohler.
 
 ## Tasks and datasets description
 
@@ -35,7 +32,7 @@ The content in the `data/` folder can be reproduced by running the `download_and
 
 ### Launch the experiments
 
-To launch experiment $i \in {1,2,3,4}$, from the root directory run the following sequence of commands to generate the experiment shell script to be executed via the command line, give it permission to execute, and get the results.
+To launch experiment $i \in {1,2,3,4}$, first start an Elasticsearch instance by running `bin/elasticsearch` from the Elasticsearch download folder. Then, from another terminal window where the working environment has been activated, run the following sequence of commands from the root directory of the project to generate the experiment shell script, give it permission to execute, and get the results.
 ```
 python ./task_0i/write_experiment_0i.py
 chmod +x ./task_0i/experiment_0i.sh
